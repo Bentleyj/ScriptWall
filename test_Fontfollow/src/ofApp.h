@@ -9,6 +9,7 @@ class ofApp : public ofBaseApp{
 		void setup();
 		void update();
 		void draw();
+		void updateText(char val);
 
 		void keyPressed(int key);
 		void keyReleased(int key);
@@ -26,9 +27,13 @@ class ofApp : public ofBaseApp{
 
 		ofMesh textMesh;
 
+		string text = "";
+
 		ofVec2f lastPoint;
 		ofVec2f point;
 		ofVec2f target;
+		ofRectangle lastCharBoundingBox;
+		float xOffset;
 		int targetIndex;
 		
 };

@@ -6,9 +6,24 @@ void ofApp::setup(){
 
 	font->load("fonts/peach-sundress/peach-sundress.ttf", 100, true, true, true);
 
-	string text = "James Bentley\nMathilde Steen\nPete Hellicar\nNaho Matsuda";
+	updateText('_');
+	xOffset = 0;
 
-	ofRectangle rect = font->getStringBoundingBox(text, 0, 0);
+	ofBackground(0);
+	ofSetBackgroundAuto(false);
+	
+	textMesh.setMode(OF_PRIMITIVE_LINES);
+
+	target = ofVec2f(0, 0);
+	//target = textMesh.getVertex(0);
+	lastPoint = point;
+	point = ofVec2f(0, 0);
+	targetIndex = 0;
+}
+
+void ofApp::updateText(char val) {
+	string text = ""; 
+	text += val;
 
 	vector<ofTTFCharacter> characters = font->getStringAsPoints(text);
 
@@ -23,38 +38,30 @@ void ofApp::setup(){
 
 			//Go through all the points and add them to the meshes
 			for (int i = 0; i < points.size(); i++) {
-				textMesh.addVertex(ofVec3f(points[i].x, points[i].y, 0));
+				textMesh.addVertex(ofVec3f(xOffset+points[i].x, points[i].y, 0));
 				textMesh.addColor(ofColor(255));
-				textMesh.addVertex(ofVec3f(points[(i + 1) % points.size()].x, points[(i + 1) % points.size()].y, 0));
+				textMesh.addVertex(ofVec3f(xOffset+points[(i + 1) % points.size()].x, points[(i + 1) % points.size()].y, 0));
 				textMesh.addColor(ofColor(255));
 			}
 		}
 	}
-
-	ofBackground(0);
-	ofSetBackgroundAuto(false);
-	
-	textMesh.setMode(OF_PRIMITIVE_LINES);
-
-	target = textMesh.getVertex(0);
-	lastPoint = point;
-	point = ofVec2f(0, 0);
-	targetIndex = 0;
+	lastCharBoundingBox = font->getStringBoundingBox(text, 0, 0);
+	xOffset += lastCharBoundingBox.width;
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
 	lastPoint = point;
-	point.x = ofLerp(point.x, target.x, 0.1);
-	point.y = ofLerp(point.y, target.y, 0.1);
+	point.x = ofLerp(point.x, target.x, 0.2);
+	point.y = ofLerp(point.y, target.y, 0.2);
 
 	if ((point - target).length() < 0.5) {
-		targetIndex++;
-		if (targetIndex >= textMesh.getNumVertices())
+		if (targetIndex >= textMesh.getNumVertices()-1)
 		{
-			target = ofVec2f(ofGetWidth(), ofGetHeight());
+			//target = ofVec2f(ofGetWidth(), ofGetHeight());
 		} 
 		else {
+			targetIndex++;
 			target = textMesh.getVertex(targetIndex);
 		}
 	}
@@ -62,14 +69,17 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-	ofTranslate(0, ofGetHeight());
+	ofTranslate(100, ofGetHeight()-100);
+	float diff = (point - lastPoint).length();
+	float col = ofMap(diff, 0, 10, 255, 0);
+	ofSetColor(col);
 	ofDrawLine(lastPoint, point);
 	//textMesh.draw();
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-
+	updateText(key);
 }
 
 //--------------------------------------------------------------
