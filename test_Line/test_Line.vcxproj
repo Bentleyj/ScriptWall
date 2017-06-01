@@ -184,7 +184,6 @@
     <ClCompile Include="..\..\..\addons\ofxGui\src\ofxToggle.cpp" />
     <ClCompile Include="..\..\..\addons\ofxNestedFileLoader\src\ofxNestedFileLoader.cpp" />
     <ClCompile Include="src\Path.cpp" />
-    <ClCompile Include="src\PersistentLine.cpp" />
     <ClCompile Include="src\WobblyLine.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -201,7 +200,6 @@
     <ClInclude Include="..\..\..\addons\ofxGui\src\ofxToggle.h" />
     <ClInclude Include="..\..\..\addons\ofxNestedFileLoader\src\ofxNestedFileLoader.h" />
     <ClInclude Include="src\Path.h" />
-    <ClInclude Include="src\PersistentLine.h" />
     <ClInclude Include="src\WobblyLine.h" />
   </ItemGroup>
   <ItemGroup>

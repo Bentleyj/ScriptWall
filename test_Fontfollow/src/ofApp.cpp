@@ -6,7 +6,7 @@ void ofApp::setup(){
 
 	font->load("fonts/peach-sundress/peach-sundress.ttf", 100, true, true, true);
 
-	string text = "James Bentley";
+	string text = "James Bentley\nMathilde Steen\nPete Hellicar\nNaho Matsuda";
 
 	ofRectangle rect = font->getStringBoundingBox(text, 0, 0);
 
@@ -37,12 +37,14 @@ void ofApp::setup(){
 	textMesh.setMode(OF_PRIMITIVE_LINES);
 
 	target = textMesh.getVertex(0);
+	lastPoint = point;
 	point = ofVec2f(0, 0);
 	targetIndex = 0;
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
+	lastPoint = point;
 	point.x = ofLerp(point.x, target.x, 0.1);
 	point.y = ofLerp(point.y, target.y, 0.1);
 
@@ -60,8 +62,8 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-	ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2);
-	ofDrawCircle(point.x, point.y, 2);
+	ofTranslate(0, ofGetHeight());
+	ofDrawLine(lastPoint, point);
 	//textMesh.draw();
 }
 

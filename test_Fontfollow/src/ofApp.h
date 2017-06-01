@@ -26,6 +26,7 @@ class ofApp : public ofBaseApp{
 
 		ofMesh textMesh;
 
+		ofVec2f lastPoint;
 		ofVec2f point;
 		ofVec2f target;
 		int targetIndex;
