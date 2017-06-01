@@ -1,11 +1,7 @@
 #pragma once
 
 #include "ofMain.h"
-#include "ofxGui.h"
-#include "WobblyLine.h"
-#include "PersistentLine.h"
-
-#include "Path.h"
+#include "ofxFontStash.h"
 
 class ofApp : public ofBaseApp{
 
@@ -26,11 +22,8 @@ class ofApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
 
-		ofxPanel gui;
+		ofTrueTypeFont* font;
 
-		PersistentLine line;
-
-		ofPolyline path;
-		int targetVertIndex;
+		ofMesh textMesh;
 		
 };

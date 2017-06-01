@@ -2,33 +2,47 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-	// load the gui settings once we have them.
-	string settingsPath = "settings/settings.xml";
-	gui.setup(settingsPath);
-	gui.loadFromFile(settingsPath);
+	font = new ofTrueTypeFont();
 
-	path.addVertex(200, 400);
-	path.bezierTo(100, 100, 800, 100, 700, 400);
+	font->load("fonts/HelveticaNeueBd.ttf", 50, true, true, true);
+
+	string text = "Test";
+
+	ofRectangle rect = font->getStringBoundingBox(text, 0, 0);
+
+	vector<ofTTFCharacter> characters = font->getStringAsPoints(text);
+
+	for (int j = 0; j < characters.size(); j++) {
+		// Get the outline of each character
+		ofMesh inputMesh = characters[j].getTessellation();
+
+		for (int i = 0; i < inputMesh.getNumVertices(); i++) {
+			ofPoint vertex = inputMesh.getVertex(i);
+			//inputMesh.setVertex(i, ofPoint(vertex.x - rect.width / 2, -vertex.y + rect.height / 2.0, 0));
+			inputMesh.addColor(ofColor(255));
+		}
+
+		for (int i = 0; i < inputMesh.getNumVertices()-1; i++) {
+			textMesh.addVertex(inputMesh.getVertex(i));
+			textMesh.addVertex(inputMesh.getVertex(i+1));
+
+		}
+	}
 
 	ofBackground(0);
-
-	targetVertIndex = 0;
-
-	//ofSetBackgroundAuto(false);
+	
+	textMesh.setMode(OF_PRIMITIVE_LINES);
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-	line.setTarget(ofGetMouseX(), ofGetMouseY());
-	line.update();
+
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-	ofSetColor(255);
-	line.draw();
-	//ofSetColor(255, 0, 0);
-	//path.draw();
+	ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2);
+	textMesh.draw();
 }
 
 //--------------------------------------------------------------
