@@ -25,5 +25,9 @@ class ofApp : public ofBaseApp{
 		ofTrueTypeFont* font;
 
 		ofMesh textMesh;
+
+		ofVec2f point;
+		ofVec2f target;
+		int targetIndex;
 		
 };

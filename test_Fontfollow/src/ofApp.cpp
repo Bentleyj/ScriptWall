@@ -4,9 +4,9 @@
 void ofApp::setup(){
 	font = new ofTrueTypeFont();
 
-	font->load("fonts/HelveticaNeueBd.ttf", 50, true, true, true);
+	font->load("fonts/peach-sundress/peach-sundress.ttf", 100, true, true, true);
 
-	string text = "Test";
+	string text = "James Bentley";
 
 	ofRectangle rect = font->getStringBoundingBox(text, 0, 0);
 
@@ -14,35 +14,55 @@ void ofApp::setup(){
 
 	for (int j = 0; j < characters.size(); j++) {
 		// Get the outline of each character
-		ofMesh inputMesh = characters[j].getTessellation();
+		vector<ofPolyline> lines = characters[j].getOutline();
 
-		for (int i = 0; i < inputMesh.getNumVertices(); i++) {
-			ofPoint vertex = inputMesh.getVertex(i);
-			//inputMesh.setVertex(i, ofPoint(vertex.x - rect.width / 2, -vertex.y + rect.height / 2.0, 0));
-			inputMesh.addColor(ofColor(255));
-		}
+		for (int k = 0; k < lines.size(); k++) {
 
-		for (int i = 0; i < inputMesh.getNumVertices()-1; i++) {
-			textMesh.addVertex(inputMesh.getVertex(i));
-			textMesh.addVertex(inputMesh.getVertex(i+1));
+			// Get the vertices of all the points in each of the lines
+			vector<ofPoint> points = lines[k].getVertices();
 
+			//Go through all the points and add them to the meshes
+			for (int i = 0; i < points.size(); i++) {
+				textMesh.addVertex(ofVec3f(points[i].x, points[i].y, 0));
+				textMesh.addColor(ofColor(255));
+				textMesh.addVertex(ofVec3f(points[(i + 1) % points.size()].x, points[(i + 1) % points.size()].y, 0));
+				textMesh.addColor(ofColor(255));
+			}
 		}
 	}
 
 	ofBackground(0);
+	ofSetBackgroundAuto(false);
 	
 	textMesh.setMode(OF_PRIMITIVE_LINES);
+
+	target = textMesh.getVertex(0);
+	point = ofVec2f(0, 0);
+	targetIndex = 0;
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
+	point.x = ofLerp(point.x, target.x, 0.1);
+	point.y = ofLerp(point.y, target.y, 0.1);
 
+	if ((point - target).length() < 0.5) {
+		targetIndex++;
+		if (targetIndex >= textMesh.getNumVertices())
+		{
+			target = ofVec2f(ofGetWidth(), ofGetHeight());
+		} 
+		else {
+			target = textMesh.getVertex(targetIndex);
+		}
+	}
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
 	ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2);
-	textMesh.draw();
+	ofDrawCircle(point.x, point.y, 2);
+	//textMesh.draw();
 }
 
 //--------------------------------------------------------------
