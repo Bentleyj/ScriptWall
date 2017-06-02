@@ -2,28 +2,46 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+
+	string settingsPath = "settings/settings.xml";
+	gui.setup(settingsPath);
+
+	gui.add(noiseStep.set("Wander Step", 0.0001, 0.0, 0.01));
+	gui.add(noiseMagnitude.set("Wander Speed", 1.0, 0.0, 100.0));
+	gui.add(col.set("Color", ofColor(255)));
+
+	gui.loadFromFile(settingsPath);
+
+	drawingArea.allocate(ofGetWidth(), ofGetHeight());
+
 	font = new ofTrueTypeFont();
 
 	font->load("fonts/peach-sundress/peach-sundress.ttf", 100, true, true, true);
-
-	updateText('_');
+	
 	xOffset = 0;
+	updateText('_');
 
 	ofBackground(0);
-	ofSetBackgroundAuto(false);
+	//ofSetBackgroundAuto(false);
+	ofSetFrameRate(120);
 	
 	textMesh.setMode(OF_PRIMITIVE_LINES);
 
 	target = ofVec2f(0, 0);
-	//target = textMesh.getVertex(0);
 	lastPoint = point;
-	point = ofVec2f(0, 0);
+	point = ofVec2f(ofGetWidth()/2, ofGetHeight()/2);
 	targetIndex = 0;
 }
 
 void ofApp::updateText(char val) {
-	string text = ""; 
+	string text = "";
 	text += val;
+
+	updateText(text);
+}
+
+void ofApp::updateText(string val) {
+	string text = val;
 
 	vector<ofTTFCharacter> characters = font->getStringAsPoints(text);
 
@@ -38,9 +56,9 @@ void ofApp::updateText(char val) {
 
 			//Go through all the points and add them to the meshes
 			for (int i = 0; i < points.size(); i++) {
-				textMesh.addVertex(ofVec3f(xOffset+points[i].x, points[i].y, 0));
+				textMesh.addVertex(ofVec3f(point.x + points[i].x, point.y + points[i].y, 0));
 				textMesh.addColor(ofColor(255));
-				textMesh.addVertex(ofVec3f(xOffset+points[(i + 1) % points.size()].x, points[(i + 1) % points.size()].y, 0));
+				textMesh.addVertex(ofVec3f(point.x + points[(i + 1) % points.size()].x, point.y + points[(i + 1) % points.size()].y, 0));
 				textMesh.addColor(ofColor(255));
 			}
 		}
@@ -51,39 +69,61 @@ void ofApp::updateText(char val) {
 
 //--------------------------------------------------------------
 void ofApp::update(){
-	lastPoint = point;
-	point.x = ofLerp(point.x, target.x, 0.2);
-	point.y = ofLerp(point.y, target.y, 0.2);
 
-	if ((point - target).length() < 0.5) {
-		if (targetIndex >= textMesh.getNumVertices()-1)
-		{
-			//target = ofVec2f(ofGetWidth(), ofGetHeight());
-		} 
-		else {
-			targetIndex++;
-			target = textMesh.getVertex(targetIndex);
-		}
+	if (targetIndex >= textMesh.getNumVertices() - 1)
+	{
+		col = ofColor(127);
+		targetIndex = textMesh.getNumVertices() + 1;
+		//cout << ofNoise(noise) << endl;
+		target.x += ofMap(ofNoise(noise, noise + 100), 0.0, 1.0, -1.0, 1.0) * noiseMagnitude;
+		//cout<<point.x<<endl;
+		target.y += ofMap(ofNoise(noise + 20000, noise + 500), 0.0, 1.0, -1.0, 1.0) * noiseMagnitude;
+		noise += noiseStep;
 	}
+	else {
+		col = ofColor(255);
+	}
+
+	lastPoint = point;
+	//cout << "Vertex List Size: " << textMesh.getNumVertices() << endl;
+	//cout << "targetIndex: " << targetIndex << endl;
+
+	point.x = target.x;
+	point.y = target.y;
+	if (targetIndex < textMesh.getNumVertices())
+	{
+		target = textMesh.getVertex(targetIndex);
+		targetIndex += 10;
+	}
+
+
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-	ofTranslate(100, ofGetHeight()-100);
-	float diff = (point - lastPoint).length();
-	float col = ofMap(diff, 0, 10, 255, 0);
+	drawingArea.begin();
 	ofSetColor(col);
 	ofDrawLine(lastPoint, point);
-	//textMesh.draw();
+	drawingArea.end();
+
+	ofSetColor(255);
+	drawingArea.draw(0, 0);
+
+	ofSetColor(255, 0, 0);
+	ofNoFill();
+	ofDrawCircle(target, 20);
+
+	gui.draw();
+
+	ofDrawBitmapStringHighlight(ofToString(ofGetFrameRate()), ofGetWidth() - 100, ofGetHeight() - 10);
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-	if (key == ' ') {
-		xOffset += lastCharBoundingBox.width;
-	}
-	else if(key != OF_KEY_SHIFT) {
-		updateText(key);
+	text += key;
+	if (key == OF_KEY_RETURN) {
+		updateText(text);
+		text = "";
 	}
 }
 

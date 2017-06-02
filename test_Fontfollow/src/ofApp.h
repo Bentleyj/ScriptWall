@@ -1,8 +1,8 @@
 #pragma once
 
 #include "ofMain.h"
+#include "ofxGui.h"
 #include "ofxFontStash.h"
-#include "ofxIntegrator.h"
 
 class ofApp : public ofBaseApp{
 
@@ -11,6 +11,8 @@ class ofApp : public ofBaseApp{
 		void update();
 		void draw();
 		void updateText(char val);
+		void updateText(string val);
+
 
 		void keyPressed(int key);
 		void keyReleased(int key);
@@ -24,13 +26,18 @@ class ofApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
 
+		ofxPanel gui;
+		ofParameter<float> noiseStep;
+		ofParameter<float> noiseMagnitude;
+		ofParameter<ofColor> col;
+
+		ofFbo drawingArea;
+
 		ofTrueTypeFont* font;
 
 		ofMesh textMesh;
 
 		string text = "";
-
-		Integrator<ofVec2f> pointInt;
 
 		ofVec2f lastPoint;
 		ofVec2f point;
@@ -38,5 +45,8 @@ class ofApp : public ofBaseApp{
 		ofRectangle lastCharBoundingBox;
 		float xOffset;
 		int targetIndex;
+
+
+		float noise;
 		
 };
