@@ -1,2 +1,3 @@
 ofxFontStash
 ofxGui
+ofxIntegrator

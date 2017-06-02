@@ -2,6 +2,7 @@
 
 #include "ofMain.h"
 #include "ofxFontStash.h"
+#include "ofxIntegrator.h"
 
 class ofApp : public ofBaseApp{
 
@@ -28,6 +29,8 @@ class ofApp : public ofBaseApp{
 		ofMesh textMesh;
 
 		string text = "";
+
+		Integrator<ofVec2f> pointInt;
 
 		ofVec2f lastPoint;
 		ofVec2f point;
