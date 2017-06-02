@@ -79,7 +79,12 @@ void ofApp::draw(){
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-	updateText(key);
+	if (key == ' ') {
+		xOffset += lastCharBoundingBox.width;
+	}
+	else if(key != OF_KEY_SHIFT) {
+		updateText(key);
+	}
 }
 
 //--------------------------------------------------------------
