@@ -5,4 +5,7 @@
 	<Canny_Thresh_1>15.36</Canny_Thresh_1>
 	<Canny_Thresh_2>72.96</Canny_Thresh_2>
 	<Holes>0</Holes>
+<group/>
+	<Inverse_Zoom>80</Inverse_Zoom>
+	<Step>1</Step>
 </group>

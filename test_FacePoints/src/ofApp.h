@@ -5,11 +5,17 @@
 #include "ofxGui.h"
 
 class ofApp : public ofBaseApp{
-
+	struct contourKeyPoint {
+		int index;
+		ofVec2f start;
+		ofVec2f end;
+		int nearestIndex = -1;
+	};
 	public:
 		void setup();
 		void update();
 		void draw();
+		int findNearestNext(int index, vector<contourKeyPoint>* contours);
 
 		void keyPressed(int key);
 		void keyReleased(int key);
@@ -29,6 +35,7 @@ class ofApp : public ofBaseApp{
 
 		ofxPanel gui;
 		ofParameter<float> minArea, maxArea, threshold, thresh1, thresh2;
+		ofParameter<int> step, zoom;
 		ofParameter<bool> holes;
 
 		ofImage cropped, gray, edge, sobel;

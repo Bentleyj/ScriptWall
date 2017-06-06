@@ -13,6 +13,8 @@ void ofApp::setup(){
 	cropped.allocate(512, 512, OF_IMAGE_COLOR);
 
 	mesh.setMode(OF_PRIMITIVE_LINES);
+
+	ofSetLineWidth(1);
 	cam.setup(640, 480);
 	gui.setup();
 	gui.add(minArea.set("Min area", 10, 1, 100));
@@ -20,7 +22,9 @@ void ofApp::setup(){
 	gui.add(threshold.set("Threshold", 128, 0, 255));
 	gui.add(thresh1.set("Canny Thresh 1", 128, 0, ofGetWidth()));
 	gui.add(thresh2.set("Canny Thresh 2", 128, 0, ofGetHeight()));
+	gui.add(zoom.set("Inverse Zoom", 0, 0, 100));
 	gui.add(holes.set("Holes", false));
+	gui.add(step.set("Step", 1, 1, 30));
 	gui.loadFromFile("settings.xml");
 
 	ofBackground(0);
@@ -43,9 +47,38 @@ void ofApp::update(){
 		if (cam.isFrameNew()) {
 			objectFinder.update(cam);
 			if (objectFinder.size() > 0) {
-				cv::Rect roi = toCv(objectFinder.getObject(0));
+				ofRectangle rect = objectFinder.getObject(0);
+				rect.width += zoom * 2;
+				rect.height += zoom * 2;
+				rect.x -= zoom; 
+				rect.y -= zoom;
+				cv::Rect roi = toCv(rect);
+				cv::Rect BiggerROI = roi;
+
+
 				Mat camMat = toCv(cam);
-				Mat croppedCamMat(camMat, roi);
+				if ((BiggerROI.x + BiggerROI.width) > camMat.cols - 1) {
+					BiggerROI.width = camMat.cols - 1 - BiggerROI.x;
+					BiggerROI.height = BiggerROI.width;
+				}
+				if ((BiggerROI.y + BiggerROI.height) > camMat.rows - 1) {
+					BiggerROI.height = camMat.rows - 1 - BiggerROI.y;
+					BiggerROI.width = BiggerROI.height;
+				}
+				if (BiggerROI.x > cam.getWidth() - 1) {
+					BiggerROI.x = cam.getWidth() - 1;
+				}
+				if (BiggerROI.y > cam.getHeight() - 1) {
+					BiggerROI.y = cam.getHeight() - 1;
+				}
+				if (BiggerROI.x < 1) {
+					BiggerROI.x = 1;
+				}
+				if (BiggerROI.y < 1) {
+					BiggerROI.y = 1;
+				}
+
+				Mat croppedCamMat(camMat, BiggerROI);
 				resize(croppedCamMat, cropped);
 				cropped.update();
 			}
@@ -88,14 +121,18 @@ void ofApp::draw(){
 	}
 	ofSetColor(255);
 	edge.draw(0, 0);
-	float dist = (point - lastPoint).length();
-	col = ofMap(dist, 100, 15, 0, 255, true);
-	ofSetColor(col, col, 0);
-	ofPushMatrix();
-	ofTranslate(edge.getWidth(), 0);
-	ofDrawLine(lastPoint, point);
-	ofPopMatrix();
-	//mesh.draw();
+	if (!finding) {
+		if (targetIndex < mesh.getNumColors()) {
+			ofSetColor(mesh.getColor(targetIndex));
+		}
+		else {
+			ofSetColor(255, 0, 0);
+		}
+		ofPushMatrix();
+		ofTranslate(edge.getWidth(), 0);
+		ofDrawLine(lastPoint, point);
+		ofPopMatrix();
+	}
 	gui.draw();
 
 	ofDrawBitmapStringHighlight(ofToString(ofGetFrameRate()), ofGetWidth() - 100, ofGetHeight() - 20);
@@ -110,19 +147,54 @@ void ofApp::keyPressed(int key){
 	clearDrawing = true;
 	mesh.clear();
 	contours = contourFinder.getContours();
+	// store the first and last point of each centroid
+	vector<contourKeyPoint> contourDefs;
 	for (int i = 0; i < contours.size(); i++) {
+		contourKeyPoint keyPoint;
+		int lastIndex = contours[i].size() - 1;
+		keyPoint.index = i;
+		keyPoint.start = ofVec2f(contours[i][0].x, contours[i][0].y);
+		keyPoint.end = ofVec2f(contours[i][lastIndex].x, contours[i][lastIndex].y);
+		contourDefs.push_back(keyPoint);
+	}
+
+	int i = 0;
+	while (1) {
+		int nearestIndex = findNearestNext(i, &contourDefs);
+		if (nearestIndex == -1) {
+			contourDefs[i].nearestIndex = -1;
+			break;
+		}
+		contourDefs[i].nearestIndex = nearestIndex;
+		i = nearestIndex;
+	}
+
+	for (int i = 0; i != -1; i = contourDefs[i].nearestIndex) {
 		for (int j = 0; j < contours[i].size()-1; j++) {
-			float x1 = contours[i][j].x;
-			float y1 = contours[i][j].y;
+			float x = contours[i][j].x;
+			float y = contours[i][j].y;
 
-			float x2 = contours[i][j+1].x;
-			float y2 = contours[i][j+1].y;
-
-			mesh.addVertex(ofVec3f(x1, y1, 0));
-			mesh.addVertex(ofVec3f(x2, y2, 0));
+			mesh.addVertex(ofVec3f(x, y, 0));
+			ofColor col = (j < 3) ? ofColor(127) : ofColor(255);
+			mesh.addColor(col);
 		}
 	}
-	cout << mesh.getNumVertices()<<endl;
+}
+
+int ofApp::findNearestNext(int index, vector<contourKeyPoint>* contours) {
+	int nearestIndex = -1;
+	float minDist = 10000;
+	for (int i = 0; i < contours->size(); i++) {
+		if (i == index || (*contours)[i].nearestIndex != -1) { }
+		else {
+			float dist = ((*contours)[index].end - (*contours)[i].start).length();
+			if (dist < minDist) {
+				minDist = dist;
+				nearestIndex = i;
+			}
+		}
+	}
+	return nearestIndex;
 }
 
 //--------------------------------------------------------------
