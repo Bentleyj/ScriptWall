@@ -1,6 +1,8 @@
 #pragma once
 
 #include "ofMain.h"
+#include "ofxCv.h"
+#include "ofxGui.h"
 
 class ofApp : public ofBaseApp{
 
@@ -20,5 +22,18 @@ class ofApp : public ofBaseApp{
 		void windowResized(int w, int h);
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
+
+		ofVideoGrabber cam;
+		ofxCv::ContourFinder contourFinder;
+
+		ofxPanel gui;
+		ofParameter<float> minArea, maxArea, threshold, thresh1, thresh2;
+		ofParameter<bool> holes;
+
+		ofImage gray, edge, sobel;
+
+		vector<vector<cv::Point>> contours;
+
+		ofMesh mesh;
 		
 };
