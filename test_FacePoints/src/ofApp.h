@@ -24,13 +24,14 @@ class ofApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
 
 		ofVideoGrabber cam;
+		ofxCv::ObjectFinder objectFinder;
 		ofxCv::ContourFinder contourFinder;
 
 		ofxPanel gui;
 		ofParameter<float> minArea, maxArea, threshold, thresh1, thresh2;
 		ofParameter<bool> holes;
 
-		ofImage gray, edge, sobel;
+		ofImage cropped, gray, edge, sobel;
 
 		vector<vector<cv::Point>> contours;
 
@@ -43,4 +44,8 @@ class ofApp : public ofBaseApp{
 		float col;
 
 		int targetIndex;
+
+		bool finding;
+		bool clearDrawing;
+		int yOffset;
 };
