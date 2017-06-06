@@ -16,6 +16,13 @@ void ofApp::setup(){
 
 	ofBackground(0);
 	gui.add(holes.set("Holes", false));
+
+	target = ofVec2f(0, 0);
+	lastPoint = point;
+	point = ofVec2f(ofGetWidth() / 2, ofGetHeight() / 2);
+	targetIndex = 0;
+
+	ofSetBackgroundAuto(false);
 }
 
 //--------------------------------------------------------------
@@ -29,14 +36,22 @@ void ofApp::update(){
 		sobel.update();
 		edge.update();
 
-
 		contourFinder.setMinAreaRadius(minArea);
 		contourFinder.setMaxAreaRadius(maxArea);
 		contourFinder.setThreshold(threshold);
 		contourFinder.findContours(edge);
 		contourFinder.setFindHoles(holes);
 
+	}
 
+	lastPoint = point;
+
+	point.x = target.x;
+	point.y = target.y;
+	if (targetIndex < mesh.getNumVertices())
+	{
+		target = mesh.getVertex(targetIndex);
+		targetIndex += 10;
 	}
 }
 
@@ -46,8 +61,14 @@ void ofApp::draw(){
 	ofSetColor(255);
 	edge.draw(0, 0);
 	//contourFinder.draw();
-	ofSetColor(255, 255, 0);
-	mesh.draw();
+	float dist = (point - lastPoint).length();
+	col = ofMap(dist, 100, 15, 0, 255, true);
+	ofSetColor(col);
+	ofPushMatrix();
+	ofTranslate(edge.getWidth(), 0);
+	ofDrawLine(lastPoint, point);
+	ofPopMatrix();
+	//mesh.draw();
 	gui.draw();
 }
 
@@ -65,7 +86,6 @@ void ofApp::keyPressed(int key){
 
 			mesh.addVertex(ofVec3f(x1, y1, 0));
 			mesh.addVertex(ofVec3f(x2, y2, 0));
-
 		}
 	}
 }

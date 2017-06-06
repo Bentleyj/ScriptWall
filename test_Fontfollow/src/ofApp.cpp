@@ -95,8 +95,6 @@ void ofApp::update(){
 		target = textMesh.getVertex(targetIndex);
 		targetIndex += 10;
 	}
-
-
 }
 
 //--------------------------------------------------------------

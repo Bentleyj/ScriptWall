@@ -1,0 +1,8 @@
+<group>
+	<Min_area>1</Min_area>
+	<Max_area>500</Max_area>
+	<Threshold>128</Threshold>
+	<Canny_Thresh_1>15.36</Canny_Thresh_1>
+	<Canny_Thresh_2>72.96</Canny_Thresh_2>
+	<Holes>0</Holes>
+</group>

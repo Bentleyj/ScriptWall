@@ -35,5 +35,12 @@ class ofApp : public ofBaseApp{
 		vector<vector<cv::Point>> contours;
 
 		ofMesh mesh;
-		
+
+		ofVec2f lastPoint;
+		ofVec2f point;
+		ofVec2f target;
+
+		float col;
+
+		int targetIndex;
 };
