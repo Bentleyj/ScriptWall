@@ -104,7 +104,7 @@ void ofApp::update(){
 		if (targetIndex < mesh.getNumVertices())
 		{
 			target = mesh.getVertex(targetIndex);
-			targetIndex++;
+			targetIndex += step;
 		}
 		else {
 			finding = true;
@@ -175,7 +175,7 @@ void ofApp::keyPressed(int key){
 			float y = contours[i][j].y;
 
 			mesh.addVertex(ofVec3f(x, y, 0));
-			ofColor col = (j < 3) ? ofColor(127) : ofColor(255);
+			ofColor col = (j < 3) ? ofColor(0) : ofColor(255);
 			mesh.addColor(col);
 		}
 	}
