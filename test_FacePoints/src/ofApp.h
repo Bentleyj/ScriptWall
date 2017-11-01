@@ -3,6 +3,7 @@
 #include "ofMain.h"
 #include "ofxCv.h"
 #include "ofxGui.h"
+#include "ofxIntegrator.h"
 
 class ofApp : public ofBaseApp{
 	struct contourKeyPoint {
@@ -37,20 +38,23 @@ class ofApp : public ofBaseApp{
 		ofParameter<float> minArea, maxArea, threshold, thresh1, thresh2;
 		ofParameter<int> step, zoom;
 		ofParameter<bool> holes;
+		ofParameter<float> damping;
+		ofParameter<float> attraction;
 
 		ofImage cropped, gray, edge, sobel;
 
 		vector<vector<cv::Point>> contours;
 
-		ofMesh mesh;
+		vector<ofMesh> meshes;
 
 		ofVec2f lastPoint;
-		ofVec2f point;
+		Integrator<ofVec2f> point;
 		ofVec2f target;
 
 		float col;
 
-		int targetIndex;
+		int tpIndex;
+		int tcIndex;
 
 		bool finding;
 		bool clearDrawing;

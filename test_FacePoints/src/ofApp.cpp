@@ -4,7 +4,7 @@ using namespace ofxCv;
 using namespace cv;
 
 //--------------------------------------------------------------
-void ofApp::setup(){
+void ofApp::setup() {
 	ofSetVerticalSync(true);
 
 	objectFinder.setup(ofToDataPath("haarcascade_frontalface_default.xml"));
@@ -12,7 +12,9 @@ void ofApp::setup(){
 
 	cropped.allocate(512, 512, OF_IMAGE_COLOR);
 
-	mesh.setMode(OF_PRIMITIVE_LINES);
+	//meshes = new vector<ofMesh>();
+
+	//mesh.setMode(OF_PRIMITIVE_LINES);
 
 	ofSetLineWidth(1);
 	cam.setup(640, 480);
@@ -25,14 +27,25 @@ void ofApp::setup(){
 	gui.add(zoom.set("Inverse Zoom", 0, 0, 100));
 	gui.add(holes.set("Holes", false));
 	gui.add(step.set("Step", 1, 1, 30));
+	gui.add(damping.set("Damping", 0.5, 0.0, 2.0));
+	gui.add(attraction.set("Attraction", 0.5, 0.0, 2.0));
+
 	gui.loadFromFile("settings.xml");
 
 	ofBackground(0);
 
 	target = ofVec2f(0, 0);
-	lastPoint = point;
-	point = ofVec2f(ofGetWidth() / 2, ofGetHeight() / 2);
-	targetIndex = 0;
+	point = Integrator<ofVec2f>(ofVec2f(0, 0), 0.01, 0.01);
+	//point.val = ofVec2f(ofGetWidth() / 2, ofGetHeight() / 2);
+	//point.attraction = 0.0;
+	//point.damping = 0.0;
+
+	lastPoint = point.val;
+
+	//ofSetFrameRate(60);
+
+	tpIndex = 0;
+	tcIndex = 0;
 
 	ofSetBackgroundAuto(false);
 
@@ -41,7 +54,8 @@ void ofApp::setup(){
 }
 
 //--------------------------------------------------------------
-void ofApp::update(){
+void ofApp::update() {
+	//point.target(ofVec2f(ofGetMouseX(), ofGetMouseY()));
 	if (finding) {
 		cam.update();
 		if (cam.isFrameNew()) {
@@ -50,7 +64,7 @@ void ofApp::update(){
 				ofRectangle rect = objectFinder.getObject(0);
 				rect.width += zoom * 2;
 				rect.height += zoom * 2;
-				rect.x -= zoom; 
+				rect.x -= zoom;
 				rect.y -= zoom;
 				cv::Rect roi = toCv(rect);
 				cv::Rect BiggerROI = roi;
@@ -97,17 +111,30 @@ void ofApp::update(){
 		}
 	}
 	else {
-		lastPoint = point;
-
-		point.x = target.x;
-		point.y = target.y;
-		if (targetIndex < mesh.getNumVertices())
-		{
-			target = mesh.getVertex(targetIndex);
-			targetIndex += step;
-		}
-		else {
-			finding = true;
+		lastPoint = point.val;
+		point.damping = damping;
+		point.attraction = attraction;
+		point.update();
+		//point.x = ofLerp(lastPoint.x, target.x, 0.1);
+		//point.y = ofLerp(lastPoint.y, target.y, 0.1);
+		if (tcIndex < meshes.size()) {
+			if (tpIndex < meshes[tcIndex].getNumVertices())
+			{
+				float dist = abs((point.val - target).length());
+				if (dist < 1) {
+					target = meshes[tcIndex].getVertex(tpIndex);
+					tpIndex += step;
+					point.target(target);
+				}
+			}
+			else {
+				tcIndex++;
+				tpIndex = 0;
+				if (tcIndex >= meshes.size()) {
+					finding = true;
+					tcIndex = 0;
+				}
+			}
 		}
 	}
 }
@@ -122,18 +149,20 @@ void ofApp::draw(){
 	ofSetColor(255);
 	edge.draw(0, 0);
 	if (!finding) {
-		if (targetIndex < mesh.getNumColors()) {
-			ofSetColor(mesh.getColor(targetIndex));
-		}
-		else {
-			ofSetColor(255, 0, 0);
-		}
+		//if (tpIndex < meshes[tcIndex].getNumColors()) {
+			//ofSetColor(meshes[tcIndex].getColor(tpIndex));
+		//}
+		//else {
+			//ofSetColor(255, 0, 0);
+		//}
 		ofPushMatrix();
 		ofTranslate(edge.getWidth(), 0);
-		ofDrawLine(lastPoint, point);
+		ofDrawLine(lastPoint, point.val);
 		ofPopMatrix();
 	}
 	gui.draw();
+
+	//ofDrawCircle(point.val.x, point.val.y, 20);
 
 	ofDrawBitmapStringHighlight(ofToString(ofGetFrameRate()), ofGetWidth() - 100, ofGetHeight() - 20);
 }
@@ -142,10 +171,10 @@ void ofApp::draw(){
 void ofApp::keyPressed(int key){
 	point = ofVec2f(0, 0);
 	target = ofVec2f(0, 0);
-	targetIndex = 0;
+	tpIndex = 0;
 	finding = false;
 	clearDrawing = true;
-	mesh.clear();
+	meshes.clear();
 	contours = contourFinder.getContours();
 	// store the first and last point of each centroid
 	vector<contourKeyPoint> contourDefs;
@@ -170,14 +199,17 @@ void ofApp::keyPressed(int key){
 	}
 
 	for (int i = 0; i != -1; i = contourDefs[i].nearestIndex) {
-		for (int j = 0; j < contours[i].size()-1; j++) {
+		ofMesh mesh;
+		for (int j = 0; j < contours[i].size()-1; j += step) {
 			float x = contours[i][j].x;
 			float y = contours[i][j].y;
 
 			mesh.addVertex(ofVec3f(x, y, 0));
 			ofColor col = (j < 3) ? ofColor(0) : ofColor(255);
 			mesh.addColor(col);
+
 		}
+		meshes.push_back(mesh);
 	}
 }
 

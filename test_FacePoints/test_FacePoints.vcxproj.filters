@@ -7,6 +7,12 @@
 		<ClCompile Include="src\main.cpp">
 			<Filter>src</Filter>
 		</ClCompile>
+		<ClCompile Include="src\main.cpp">
+			<Filter>src</Filter>
+		</ClCompile>
+		<ClCompile Include="src\ofApp.cpp">
+			<Filter>src</Filter>
+		</ClCompile>
 		<ClCompile Include="..\..\..\addons\ofxCv\libs\CLD\src\ETF.cpp">
 			<Filter>addons\ofxCv\libs\CLD\src</Filter>
 		</ClCompile>
@@ -141,6 +147,12 @@
 		<Filter Include="addons\ofxGui\src">
 			<UniqueIdentifier>{645E9533-4DCD-6179-1CDF-CB65}</UniqueIdentifier>
 		</Filter>
+		<Filter Include="addons\ofxIntegrator">
+			<UniqueIdentifier>{2CEC1DD2-BD66-DCB9-BE62-3FAD}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="addons\ofxIntegrator\src">
+			<UniqueIdentifier>{69D75A63-CFA8-9C20-B2FC-3B58}</UniqueIdentifier>
+		</Filter>
 		<Filter Include="addons\ofxNestedFileLoader">
 			<UniqueIdentifier>{1D4399C8-2D3B-7FE7-DD9D-3FF9}</UniqueIdentifier>
 		</Filter>
@@ -236,6 +248,9 @@
 		<ClInclude Include="src\ofApp.h">
 			<Filter>src</Filter>
 		</ClInclude>
+		<ClInclude Include="src\ofApp.h">
+			<Filter>src</Filter>
+		</ClInclude>
 		<ClInclude Include="..\..\..\addons\ofxCv\src\ofxCv.h">
 			<Filter>addons\ofxCv\src</Filter>
 		</ClInclude>
@@ -310,6 +325,9 @@
 		</ClInclude>
 		<ClInclude Include="..\..\..\addons\ofxGui\src\ofxToggle.h">
 			<Filter>addons\ofxGui\src</Filter>
+		</ClInclude>
+		<ClInclude Include="..\..\..\addons\ofxIntegrator\src\ofxIntegrator.h">
+			<Filter>addons\ofxIntegrator\src</Filter>
 		</ClInclude>
 		<ClInclude Include="..\..\..\addons\ofxNestedFileLoader\src\ofxNestedFileLoader.h">
 			<Filter>addons\ofxNestedFileLoader\src</Filter>
