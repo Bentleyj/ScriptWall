@@ -1,0 +1,6 @@
+<Settings>
+	<Range>50</Range>
+	<Dampening>0.965</Dampening>
+	<Attraction>0.01</Attraction>
+<Settings/>
+</Settings>
