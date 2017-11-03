@@ -1,5 +1,5 @@
 ofxCv
+ofxEasing
 ofxGui
 ofxIntegrator
-ofxNestedFileLoader
 ofxOpenCv

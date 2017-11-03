@@ -7,12 +7,6 @@
 		<ClCompile Include="src\main.cpp">
 			<Filter>src</Filter>
 		</ClCompile>
-		<ClCompile Include="src\main.cpp">
-			<Filter>src</Filter>
-		</ClCompile>
-		<ClCompile Include="src\ofApp.cpp">
-			<Filter>src</Filter>
-		</ClCompile>
 		<ClCompile Include="..\..\..\addons\ofxCv\libs\CLD\src\ETF.cpp">
 			<Filter>addons\ofxCv\libs\CLD\src</Filter>
 		</ClCompile>
@@ -76,9 +70,6 @@
 		<ClCompile Include="..\..\..\addons\ofxGui\src\ofxToggle.cpp">
 			<Filter>addons\ofxGui\src</Filter>
 		</ClCompile>
-		<ClCompile Include="..\..\..\addons\ofxNestedFileLoader\src\ofxNestedFileLoader.cpp">
-			<Filter>addons\ofxNestedFileLoader\src</Filter>
-		</ClCompile>
 		<ClCompile Include="..\..\..\addons\ofxOpenCv\src\ofxCvColorImage.cpp">
 			<Filter>addons\ofxOpenCv\src</Filter>
 		</ClCompile>
@@ -141,6 +132,12 @@
 		<Filter Include="addons\ofxCv\libs\ofxCv\src">
 			<UniqueIdentifier>{D4F40DFE-7BFE-9E37-3B94-006C}</UniqueIdentifier>
 		</Filter>
+		<Filter Include="addons\ofxEasing">
+			<UniqueIdentifier>{CAD580FB-01DB-F456-F00B-7791}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="addons\ofxEasing\src">
+			<UniqueIdentifier>{59A6BD40-DCB3-8A98-B41B-1BA9}</UniqueIdentifier>
+		</Filter>
 		<Filter Include="addons\ofxGui">
 			<UniqueIdentifier>{4F2A59AF-5F4E-704B-D067-EC13}</UniqueIdentifier>
 		</Filter>
@@ -152,12 +149,6 @@
 		</Filter>
 		<Filter Include="addons\ofxIntegrator\src">
 			<UniqueIdentifier>{69D75A63-CFA8-9C20-B2FC-3B58}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="addons\ofxNestedFileLoader">
-			<UniqueIdentifier>{1D4399C8-2D3B-7FE7-DD9D-3FF9}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="addons\ofxNestedFileLoader\src">
-			<UniqueIdentifier>{8EB7360D-67B1-1427-CD57-E2EE}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv">
 			<UniqueIdentifier>{FFA81411-43B9-BD99-75AF-1DC3}</UniqueIdentifier>
@@ -248,9 +239,6 @@
 		<ClInclude Include="src\ofApp.h">
 			<Filter>src</Filter>
 		</ClInclude>
-		<ClInclude Include="src\ofApp.h">
-			<Filter>src</Filter>
-		</ClInclude>
 		<ClInclude Include="..\..\..\addons\ofxCv\src\ofxCv.h">
 			<Filter>addons\ofxCv\src</Filter>
 		</ClInclude>
@@ -299,6 +287,12 @@
 		<ClInclude Include="..\..\..\addons\ofxCv\libs\ofxCv\include\ofxCv\Wrappers.h">
 			<Filter>addons\ofxCv\libs\ofxCv\include\ofxCv</Filter>
 		</ClInclude>
+		<ClInclude Include="..\..\..\addons\ofxEasing\src\easing_terms_of_use.html">
+			<Filter>addons\ofxEasing\src</Filter>
+		</ClInclude>
+		<ClInclude Include="..\..\..\addons\ofxEasing\src\ofxEasing.h">
+			<Filter>addons\ofxEasing\src</Filter>
+		</ClInclude>
 		<ClInclude Include="..\..\..\addons\ofxGui\src\ofxBaseGui.h">
 			<Filter>addons\ofxGui\src</Filter>
 		</ClInclude>
@@ -328,9 +322,6 @@
 		</ClInclude>
 		<ClInclude Include="..\..\..\addons\ofxIntegrator\src\ofxIntegrator.h">
 			<Filter>addons\ofxIntegrator\src</Filter>
-		</ClInclude>
-		<ClInclude Include="..\..\..\addons\ofxNestedFileLoader\src\ofxNestedFileLoader.h">
-			<Filter>addons\ofxNestedFileLoader\src</Filter>
 		</ClInclude>
 		<ClInclude Include="..\..\..\addons\ofxOpenCv\src\ofxCvBlob.h">
 			<Filter>addons\ofxOpenCv\src</Filter>
