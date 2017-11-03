@@ -27,8 +27,8 @@ void ofApp::setup() {
 	gui.add(zoom.set("Inverse Zoom", 0, 0, 100));
 	gui.add(holes.set("Holes", false));
 	gui.add(step.set("Step", 1, 1, 30));
-	gui.add(damping.set("Damping", 0.5, 0.0, 2.0));
-	gui.add(attraction.set("Attraction", 0.5, 0.0, 2.0));
+	gui.add(damping.set("Damping", 0.95, 0.8, 0.99));
+	gui.add(attraction.set("Attraction", 0.01, 0.0, 0.2));
 
 	gui.loadFromFile("settings.xml");
 
@@ -121,7 +121,7 @@ void ofApp::update() {
 			if (tpIndex < meshes[tcIndex].getNumVertices())
 			{
 				float dist = abs((point.val - target).length());
-				if (dist < 1) {
+				if (dist < 20) {
 					target = meshes[tcIndex].getVertex(tpIndex);
 					tpIndex += step;
 					point.target(target);
@@ -149,9 +149,9 @@ void ofApp::draw(){
 	ofSetColor(255);
 	edge.draw(0, 0);
 	if (!finding) {
-		//if (tpIndex < meshes[tcIndex].getNumColors()) {
-			//ofSetColor(meshes[tcIndex].getColor(tpIndex));
-		//}
+		if (tpIndex < meshes[tcIndex].getNumColors()) {
+			ofSetColor(meshes[tcIndex].getColor(tpIndex));
+		}
 		//else {
 			//ofSetColor(255, 0, 0);
 		//}
@@ -207,7 +207,6 @@ void ofApp::keyPressed(int key){
 			mesh.addVertex(ofVec3f(x, y, 0));
 			ofColor col = (j < 3) ? ofColor(0) : ofColor(255);
 			mesh.addColor(col);
-
 		}
 		meshes.push_back(mesh);
 	}
